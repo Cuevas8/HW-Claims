@@ -7,9 +7,10 @@ import io.ktor.response.*
 import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.utils.io.*
-import org.csuf.cspc411.Dao.Database
-import org.csuf.cspc411.Dao.person.Person
-import org.csuf.cspc411.Dao.person.PersonDao
+import org.csuf.cspc411.Dao.claim.ClaimDao
+import org.csuf.cspc411.Dao.person.Claim
+//import org.csuf.cspc411.Dao.person.Person
+//import org.csuf.cspc411.Dao.person.PersonDao
 
 fun main(args: Array<String>): Unit {
     // Register PersonStore callback functions
@@ -25,27 +26,30 @@ fun Application.module(testing: Boolean = false) {
     // routing constructor takes only one parameter which is a lambda function
     // DSL - Domain Specific Language
     routing{
-        this.get("/PersonService/add"){
+        this.post("/ClaimService/add"){
             println("HTTP message is using GET method with /get ")
-            val fn = call.request.queryParameters["FirstName"]
-            val ln : String? = call.request.queryParameters["LastName"]
-            val sn : String? = call.request.queryParameters["SSN"]
-            val response = String.format("First Name %s and Last Name %s", fn, ln)
+            val id = call.request.queryParameters["id"]
+            val title : String? = call.request.queryParameters["title"]
+            val date : String? = call.request.queryParameters["date"]
+            val isSolved : String? = call.request.queryParameters["isSolved"]
+            val response = String.format("id: %s and title: %s and date: %s and isSolved: %s", id, title, date, isSolved)
             //
-            val pObj = Person(fn, ln, sn)
-            val dao = PersonDao().addPerson(pObj)
-            call.respondText(response, status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
+            if (isSolved is String) {
+                val cObj = Claim(id, title, date, isSolved.toInt())
+                val dao = ClaimDao().addClaim(cObj)
+                call.respondText(response, status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
+            }
         }
 
-        get("/PersonService/getAll"){
-            val pList = PersonDao().getAll()
-            println("The number of students : ${pList.size}")
+        get("/ClaimService/getAll"){
+            val pList = ClaimDao().getAll()
+            println("The number of claims : ${pList.size}")
             // JSON Serialization/Deserialization
             val respJsonStr = Gson().toJson(pList)
             call.respondText(respJsonStr, status= HttpStatusCode.OK, contentType= ContentType.Application.Json)
         }
 
-        post("/PersonService/add"){
+        post("/ClaimService/add"){
             val contType = call.request.contentType()
             val data = call.request.receiveChannel()
             val dataLength = data.availableForRead
