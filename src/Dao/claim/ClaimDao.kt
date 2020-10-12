@@ -37,8 +37,9 @@ class ClaimDao : Dao() {
             val id = st.columnString(0)
             val title = st.columnString(1)
             val date = st.columnString(2)
-            val isSolved = st.columnString(3)
-            claimList.add(Claim(id, title, date, isSolved.toInt()))
+            val isSolvedString = st.columnString(3)
+
+            claimList.add(Claim(id, title, date, isSolvedString.toInt()))
         }
 
         return claimList
