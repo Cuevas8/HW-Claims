@@ -4,27 +4,21 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-data class Claim (var id:String?, var title:String?, var date:String?, var isSolved:Int)
+data class Claim (var id:String?, var title:String?, var date:String?, var isSolved:Boolean = false)
 
 fun main() {
     // JSON Serialization
     //var pObj = Person("George", "Sampson", "6475847474")
-    var claimObj = Claim("testID", "TestTitle","2020 10-09", 0 )
-
+    var claimObj = Claim("testID", "TestTitle","2020 10-09")
 
     //var jsonStr = Gson().toJson(pObj)
     var jsonStr = Gson().toJson(claimObj)
-
-
-
-
     println("The converted JSON string : ${jsonStr}")
 
     // Serialization of List<Person>
     var cList : MutableList<Claim> = mutableListOf()
     cList.add(claimObj)
-    cList.add(Claim("testID2", "testTitle2","2020 10-09", 0))
-
+    cList.add(Claim("testID2", "testTitle2","2020 10-09"))
 
     val listJsonString = Gson().toJson(cList)
     //JSONArray object

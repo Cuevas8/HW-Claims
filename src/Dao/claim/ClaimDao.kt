@@ -9,7 +9,6 @@ import org.csuf.cspc411.Dao.person.Claim
 
 class ClaimDao : Dao() {
 
-
     fun addClaim(claimObj: Claim) {
         // 1. Get db connection
         val conn = Database.getInstance()?.getDbConnection()
@@ -39,7 +38,7 @@ class ClaimDao : Dao() {
             val date = st.columnString(2)
             val isSolvedString = st.columnString(3)
 
-            claimList.add(Claim(id, title, date, isSolvedString.toInt()))
+            claimList.add(Claim(id, title, date, isSolvedString.toBoolean()))
         }
 
         return claimList

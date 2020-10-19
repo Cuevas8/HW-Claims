@@ -28,25 +28,24 @@ fun Application.module(testing: Boolean = false) {
     // routing constructor takes only one parameter which is a lambda function
     // DSL - Domain Specific Language
     routing{
-        this.post("/ClaimService/add"){
-            println("HTTP message is using GET method with /get ")
-            //val id = call.request.queryParameters["id"]
-
-            val id = UUID.randomUUID().toString()
-            val title : String? = call.request.queryParameters["title"]
-            val date : String? = call.request.queryParameters["date"]
-            //val isSolved : String? = call.request.queryParameters["isSolved"]
-            val isSolved : Int = 0
-            //false = 0 and true = 1
-
-            val response = String.format("id: %s and title: %s and date: %s and isSolved: %s", id, title, date, isSolved)
-            //
-
-            val cObj = Claim(id, title, date, isSolved)
-            val dao = ClaimDao().addClaim(cObj)
-            call.respondText(response, status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
-
-        }
+//        this.post("/ClaimService/add"){
+//            println("HTTP message is using GET method with /get ")
+//            //val id = call.request.queryParameters["id"]
+//
+//            val id = UUID.randomUUID().toString()
+//            val title : String? = call.request.queryParameters["title"]
+//            val date : String? = call.request.queryParameters["date"]
+//            //val isSolved : String? = call.request.queryParameters["isSolved"]
+//            val isSolved : Boolean = false
+//            //false = 0 and true = 1
+//
+//            val response = String.format("id: %s and title: %s and date: %s and isSolved: %s", id, title, date, isSolved)
+//            //
+//
+//            val cObj = Claim(id, title, date, isSolved)
+//            val dao = ClaimDao().addClaim(cObj)
+//            call.respondText(response, status= HttpStatusCode.OK, contentType = ContentType.Text.Plain)
+//        }
 
         get("/ClaimService/getAll"){
             val pList = ClaimDao().getAll()
@@ -65,7 +64,11 @@ fun Application.module(testing: Boolean = false) {
             val str = String(output)    // for further processing
 
             // JSON serialization/deserialization
-            // GSON (Google library)
+            val gsonString = Gson().fromJson(str, Claim::class.java)
+            println(gsonString)
+            val claimObj = Claim(UUID.randomUUID().toString(), gsonString.title, gsonString.date, false)
+            val dao = ClaimDao().addClaim(claimObj)
+                    // GSON (Google library)
 
             println("HTTP message is using POST method with /post ${contType} ${str}")
             call.respondText("The POST request was successfully processed. ",
